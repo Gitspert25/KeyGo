@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KeyGo - Typing Training</title>
+<!-- Bootstrap 5 CSS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<style>
+  /* White & Green theme */
+  :root {
+    --green: #28a745;
+    --green-dark: #19692c;
+    --white: #fff;
+    --gray-light: #f8f9fa;
+  }
+
+  body, html {
+    height: 100%;
+    margin: 0;
+    background: var(--white);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Loading screen */
+  #loadingScreen {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: var(--green);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 900;
+    z-index: 1050;
+    transition: transform 1s ease;
+  }
+
+  #loadingScreen.slide-out {
+    transform: translateX(-100%);
+  }
+
+  /* Dashboard container */
+  #dashboard {
+    padding: 3rem 1rem 6rem;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.5s;
+  }
+
+  #dashboard.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  h1 {
+    color: var(--green-dark);
+    margin-bottom: 2rem;
+  }
+
+  /* Lessons path container */
+  .lesson-track {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 40px;
+    margin-top: 2rem;
+    position: relative;
+    user-select: none;
+  }
+
+  /* Connectors (lines) between circles */
+  .lesson-track::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 45px;
+    right: 45px;
+    height: 6px;
+    background: var(--green);
+    transform: translateY(-50%);
+    z-index: 0;
+  }
+
+  /* Lesson buttons (circles) */
+  .lesson-button {
+    background: var(--green);
+    color: var(--white);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(40, 167, 69, 0.5);
+    user-select: none;
+    font-size: 1.3rem;
+    transition: background-color 0.3s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  .lesson-button:hover {
+    background: var(--green-dark);
+  }
+
+  /* Instructions & Training sections */
+  #lessonInstruction, #lessonTraining {
+    max-width: 700px;
+    margin: 2rem auto;
+    text-align: left;
+    color: var(--green-dark);
+  }
+
+  #lessonInstruction h2, #lessonTraining h2 {
+    margin-bottom: 1rem;
+  }
+
+  #lessonInstruction p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Big "Start Training" button */
+  #startTrainingBtn {
+    display: block;
+    width: 100%;
+    background: var(--green);
+    color: var(--white);
+    font-weight: 700;
+    font-size: 1.3rem;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(40, 167, 69, 0.5);
+    transition: background-color 0.25s;
+  }
+  #startTrainingBtn:hover {
+    background: var(--green-dark);
+  }
+
+  /* Typing training styles */
+  #trainingText {
+    font-size: 1.25rem;
+    padding: 1rem;
+    border: 2px solid var(--green);
+    border-radius: 6px;
+    background: var(--gray-light);
+    min-height: 100px;
+    line-height: 1.6;
+    user-select: none;
+  }
+
+  #userInput {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    font-size: 1.25rem;
+    width: 100%;
+    border: 2px solid var(--green);
+    border-radius: 6px;
+    outline-color: var(--green);
+  }
+
+  /* Highlight correct/incorrect letters */
+  .correct {
+    color: var(--green-dark);
+  }
+  .incorrect {
+    color: red;
+  }
+
+  /* Result display */
+  #result {
+    margin-top: 1.5rem;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--green-dark);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loadingScreen">KeyGo Loading...</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="hidden container">
+  <h1>KeyGo - Typing Lessons</h1>
+  <div class="lesson-track" aria-label="Lesson path navigation">
+    <!-- Lesson buttons inserted by JS -->
+  </div>
+</div>
+
+<!-- Lesson Instruction -->
+<div id="lessonInstruction" class="container" style="display:none;">
+  <h2 id="lessonTitle"></h2>
+  <p id="lessonDesc"></p>
+  <button id="startTrainingBtn" aria-label="Start Typing Training">Start Training</button>
+</div>
+
+<!-- Lesson Training -->
+<div id="lessonTraining" class="container" style="display:none;">
+  <h2 id="trainingTitle"></h2>
+  <div id="trainingText" aria-live="polite"></div>
+  <input type="text" id="userInput" placeholder="Type here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Typing input" />
+  <div id="result" aria-live="polite"></div>
+</div>
+
+<!-- Bootstrap & Popper JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+(() => {
+  const lessons = [
+    {
+      id: 1,
+      title: 'Home Row Mastery',
+      description:
+        'Focus on the home row keys (ASDF for left hand, JKL; for right hand). Type the given text exactly to build muscle memory.',
+      trainingText: 'asdf jkl; asdf jkl; asdf jkl;'
+    },
+    {
+      id: 2,
+      title: 'Top Row Challenge',
+      description:
+        'Practice the top row keys (QWERTYUIOP). Accuracy and speed start here!',
+      trainingText: 'qwertyuiop qwertyuiop qwertyuiop'
+    },
+    {
+      id: 3,
+      title: 'Bottom Row Basics',
+      description:
+        'Master the bottom row keys (ZXCVBNM). Get comfortable with these important letters.',
+      trainingText: 'zxcvbnm zxcvbnm zxcvbnm'
+    },
+    {
+      id: 4,
+      title: 'All Rows Practice',
+      description:
+        'Combine all rows for a full finger workout. Stay focused and try for speed!',
+      trainingText: 'the quick brown fox jumps over the lazy dog'
+    },
+    {
+      id: 5,
+      title: 'Real Words Drill',
+      description:
+        'Practice typing real common words to prepare for real typing scenarios.',
+      trainingText: 'hello world engineer galaxy mission code'
+    }
+  ];
+
+  // Elements
+  const loadingScreen = document.getElementById('loadingScreen');
+  const dashboard = document.getElementById('dashboard');
+  const lessonTrack = dashboard.querySelector('.lesson-track');
+  const lessonInstruction = document.getElementById('lessonInstruction');
+  const lessonTraining = document.getElementById('lessonTraining');
+  const lessonTitle = document.getElementById('lessonTitle');
+  const lessonDesc = document.getElementById('lessonDesc');
+  const startTrainingBtn = document.getElementById('startTrainingBtn');
+  const trainingTitle = document.getElementById('trainingTitle');
+  const trainingTextDiv = document.getElementById('trainingText');
+  const userInput = document.getElementById('userInput');
+  const resultDiv = document.getElementById('result');
+
+  let currentLesson = null;
+  let currentIndex = 0;
+
+  // Create lesson buttons on the dashboard
+  function buildLessonButtons() {
+    lessons.forEach(lesson => {
+      const btn = document.createElement('button');
+      btn.classList.add('lesson-button');
+      btn.type = 'button';
+      btn.textContent = lesson.id;
+      btn.title = lesson.title;
+      btn.setAttribute('aria-label', `Start lesson ${lesson.id}: ${lesson.title}`);
+      btn.addEventListener('click', () => {
+        openLesson(lesson.id);
+      });
+      lessonTrack.appendChild(btn);
+    });
+  }
+
+  // Open lesson instructions
+  function openLesson(id) {
+    currentLesson = lessons.find(l => l.id === id);
+    if (!currentLesson) return;
+
+    // Hide dashboard, show instructions
+    dashboard.classList.add('hidden');
+    lessonTraining.style.display = 'none';
+
+    lessonTitle.textContent = `Lesson ${currentLesson.id}: ${currentLesson.title}`;
+    lessonDesc.textContent = currentLesson.description;
+    lessonInstruction.style.display = 'block';
+    startTrainingBtn.focus();
+  }
+
+  // Start training session for current lesson
+  function startTraining() {
+    if (!currentLesson) return;
+
+    lessonInstruction.style.display = 'none';
+    lessonTraining.style.display = 'block';
+    trainingTitle.textContent = `Typing Practice - Lesson ${currentLesson.id}`;
+    currentIndex = 0;
+    renderTrainingText();
+    userInput.value = '';
+    resultDiv.textContent = '';
+    userInput.focus();
+  }
+
+  // Render the training text with coloring
+  function renderTrainingText() {
+    const target = currentLesson.trainingText;
+    const input = userInput.value;
+
+    // Build colored text
+    let html = '';
+    for (let i = 0; i < target.length; i++) {
+      const char = target[i];
+      if (i < input.length) {
+        html += input[i] === char ? `<span class="correct">${char}</span>` : `<span class="incorrect">${char}</span>`;
+      } else {
+        html += char;
+      }
+    }
+
+    trainingTextDiv.innerHTML = html;
+
+    // Check if complete
+    if (input === target) {
+      onComplete();
+    }
+  }
+
+  // When lesson completes
+  function onComplete() {
+    resultDiv.textContent = '🎉 Awesome! You completed the lesson!';
+    userInput.disabled = true;
+    userInput.blur();
+
+    // After 3 seconds, go back to dashboard
+    setTimeout(() => {
+      lessonTraining.style.display = 'none';
+      dashboard.classList.remove('hidden');
+      resultDiv.textContent = '';
+      userInput.disabled = false;
+      userInput.value = '';
+      userInput.removeEventListener('input', onUserInput);
+    }, 3000);
+  }
+
+  // Input event
+  function onUserInput() {
+    renderTrainingText();
+  }
+
+  // Init app
+  function init() {
+    buildLessonButtons();
+
+    // Loading screen slide out after 2 sec
+    setTimeout(() => {
+      loadingScreen.classList.add('slide-out');
+      // Hide loading after animation
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+        dashboard.classList.remove('hidden');
+      }, 1000);
+    }, 2000);
+
+    // Event listeners
+    startTrainingBtn.addEventListener('click', () => {
+      startTraining();
+      userInput.addEventListener('input', onUserInput);
+    });
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>
