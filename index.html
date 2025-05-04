@@ -410,6 +410,20 @@
   </div>
 
 <script>
+window.addEventListener('load', () => {
+  setupLessonButtons();
+
+  // Hide loading screen with a nice slide-out animation
+  const loadingScreen = document.getElementById('loadingScreen');
+  loadingScreen.classList.add('slide-out'); // triggers slideLeft animation
+
+  // After animation ends, remove loading screen and show dashboard
+  loadingScreen.addEventListener('animationend', () => {
+    loadingScreen.style.display = 'none';
+    const dashboard = document.getElementById('dashboard');
+    dashboard.classList.remove('hidden');
+  });
+});
 // Data: lessons with 15 exercises each - sample texts for demonstration
 const lessons = [
   {
