@@ -1,133 +1,221 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>KeyGo - Typing Training</title>
-<!-- Bootstrap 5 CSS CDN -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KeyGo - Ultimate Typing Hub</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
 <style>
-  /* White & Green theme */
+  /* Variables */
   :root {
     --green: #28a745;
-    --green-dark: #19692c;
+    --green-light: #7ed88a;
+    --green-dark: #1c471b;
+    --green-glow: rgba(40, 167, 69, 0.6);
     --white: #fff;
-    --gray-light: #f8f9fa;
+    --gray-light: #f7f9f9;
+    --shadow-green: 0 0 15px 3px var(--green-glow);
   }
 
+  /* Reset & Body */
   body, html {
+    margin: 0; padding:0;
     height: 100%;
-    margin: 0;
     background: var(--white);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Loading screen */
+  /* Loading Screen */
   #loadingScreen {
     position: fixed; top:0; left:0; width:100%; height:100%;
+    background: linear-gradient(145deg, var(--green-dark), var(--green));
+    color: var(--white);
+    font-weight: 900;
+    font-size: 2.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    user-select: none;
+    animation: pulseGlow 2s infinite alternate;
+  }
+  @keyframes pulseGlow {
+    0% { text-shadow: 0 0 10px var(--white), 0 0 20px var(--white); }
+    100% { text-shadow: 0 0 22px var(--green-light), 0 0 44px var(--green-light);}
+  }
+  #loadingScreen.slide-out {
+    animation: slideLeft 1s forwards;
+  }
+  @keyframes slideLeft {
+    to { transform: translateX(-100vw); }
+  }
+
+  /* Navbar */
+  nav.navbar {
     background: var(--green);
+    box-shadow: var(--shadow-green);
+    padding: 0.5rem 1rem;
+  }
+  nav.navbar .navbar-brand {
+    font-weight: 900;
+    font-size: 1.8rem;
     color: var(--white);
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    font-weight: 900;
-    z-index: 1050;
-    transition: transform 1s ease;
+    gap: 0.5rem;
+    user-select: none;
+    text-decoration: none;
+  }
+  nav.navbar .navbar-brand i {
+    font-size: 2rem;
+    text-shadow: 0 0 10px var(--white);
   }
 
-  #loadingScreen.slide-out {
-    transform: translateX(-100%);
-  }
-
-  /* Dashboard container */
+  /* Dashboard Container */
   #dashboard {
-    padding: 3rem 1rem 6rem;
-    max-width: 900px;
-    margin: 0 auto;
+    padding: 2rem 1rem 5rem;
+    max-width: 960px;
+    margin: auto;
     text-align: center;
     opacity: 1;
-    transition: opacity 0.5s;
+    transition: opacity 0.5s ease;
   }
-
   #dashboard.hidden {
     opacity: 0;
     pointer-events: none;
   }
 
-  h1 {
+  h1.dashboard-header {
     color: var(--green-dark);
-    margin-bottom: 2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
   }
 
-  /* Lessons path container */
+  /* Lesson Track Container */
   .lesson-track {
     display: flex;
     justify-content: center;
     flex-wrap: nowrap;
     gap: 40px;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     position: relative;
     user-select: none;
   }
-
-  /* Connectors (lines) between circles */
   .lesson-track::before {
     content: "";
     position: absolute;
     top: 50%;
-    left: 45px;
-    right: 45px;
-    height: 6px;
-    background: var(--green);
+    left: 60px;
+    right: 60px;
+    height: 8px;
+    background: var(--green-light);
     transform: translateY(-50%);
+    border-radius: 10px;
+    filter: drop-shadow(0 0 3px var(--green-glow));
     z-index: 0;
   }
 
-  /* Lesson buttons (circles) */
+  /* Lesson buttons upgraded */
   .lesson-button {
-    background: var(--green);
+    background: linear-gradient(145deg, var(--green-light), var(--green-dark));
     color: var(--white);
-    width: 90px;
-    height: 90px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     font-weight: 700;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 0 12px rgba(40, 167, 69, 0.5);
+    box-shadow: var(--shadow-green);
     user-select: none;
-    font-size: 1.3rem;
-    transition: background-color 0.3s ease;
+    font-size: 1.4rem;
     position: relative;
+    border: 3px solid transparent;
+    transition: border-color 0.4s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    text-shadow: 0 0 4px var(--white);
     z-index: 1;
   }
-
   .lesson-button:hover {
-    background: var(--green-dark);
+    border-color: var(--green-light);
+    transform: scale(1.15);
+    box-shadow: 0 0 25px 5px var(--green-light);
   }
-
-  /* Instructions & Training sections */
-  #lessonInstruction, #lessonTraining {
-    max-width: 700px;
-    margin: 2rem auto;
-    text-align: left;
+  .lesson-button:focus {
+    outline: none;
+    border-color: var(--white);
+    box-shadow: 0 0 40px 6px var(--white);
+  }
+  .lesson-button .lesson-num {
+    font-size: 2.6rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .lesson-button .lesson-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  /* Progress badge bottom */
+  .lesson-button .progress-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    background: var(--white);
     color: var(--green-dark);
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 3px 7px;
+    border-radius: 10px;
+    user-select: none;
+    box-shadow: 0 0 6px rgba(0,0,0,0.10);
   }
 
-  #lessonInstruction h2, #lessonTraining h2 {
+  /* Instruction + Image layout */
+  #lessonInstruction {
+    max-width: 780px;
+    margin: 2rem auto;
+    color: var(--green-dark);
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  #instruction-text {
+    flex: 1 1 320px;
+  }
+
+  #instruction-text h2 {
     margin-bottom: 1rem;
+    font-weight: 800;
+    font-size: 2rem;
   }
 
-  #lessonInstruction p {
+  #instruction-text p {
     font-size: 1.1rem;
-    margin-bottom: 2rem;
+    line-height: 1.5;
   }
 
-  /* Big "Start Training" button */
+  #finger-image {
+    flex: 0 1 320px;
+    max-width: 320px;
+    filter: drop-shadow(0 0 10px var(--green-glow));
+    user-select: none;
+  }
+
+  /* Start training button */
   #startTrainingBtn {
     display: block;
     width: 100%;
@@ -136,258 +224,444 @@
     font-weight: 700;
     font-size: 1.3rem;
     padding: 1rem;
+    margin-top: 1.5rem;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    box-shadow: 0 0 12px rgba(40, 167, 69, 0.5);
-    transition: background-color 0.25s;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.7);
+    transition: background-color 0.3s ease;
   }
-  #startTrainingBtn:hover {
+  #startTrainingBtn:hover, #startTrainingBtn:focus {
     background: var(--green-dark);
+    outline: none;
   }
 
   /* Typing training styles */
-  #trainingText {
-    font-size: 1.25rem;
-    padding: 1rem;
-    border: 2px solid var(--green);
-    border-radius: 6px;
-    background: var(--gray-light);
-    min-height: 100px;
-    line-height: 1.6;
+  #lessonTraining {
+    max-width: 780px;
+    margin: 2rem auto;
+    color: var(--green-dark);
     user-select: none;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  #trainingTitle {
+    font-weight: 800;
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  #trainingText {
+    font-size: 1.4rem;
+    padding: 1rem;
+    border: 3px solid var(--green);
+    border-radius: 8px;
+    background: var(--gray-light);
+    min-height: 110px;
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+    text-align: left;
+    white-space: pre-wrap;
   }
 
   #userInput {
-    margin-top: 1rem;
-    padding: 0.75rem;
+    margin-top: 0.5rem;
+    padding: 0.85rem;
     font-size: 1.25rem;
     width: 100%;
-    border: 2px solid var(--green);
-    border-radius: 6px;
+    border: 3px solid var(--green);
+    border-radius: 8px;
     outline-color: var(--green);
+    font-family: monospace;
+    box-shadow: 0 0 15px var(--green-glow);
   }
 
   /* Highlight correct/incorrect letters */
   .correct {
     color: var(--green-dark);
+    font-weight: 700;
   }
-  .incorrect {
-    color: red;
+   .incorrect {
+    color: #d9534f; /* bootstrap danger red */
+    text-decoration: underline;
+    font-weight: 700;
   }
 
-  /* Result display */
+  /* Result message */
   #result {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     font-weight: 700;
     font-size: 1.3rem;
     color: var(--green-dark);
+    min-height: 2rem;
   }
 
+  /* Additional dashboard content container - Games, Timed Typing */
+  #extras {
+    max-width: 900px;
+    margin: 3rem auto 5rem;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .extra-card {
+    cursor: pointer;
+    background: var(--green-light);
+    border-radius: 12px;
+    box-shadow: var(--shadow-green);
+    padding: 1.5rem 2rem;
+    flex: 1 1 250px;
+    text-align: center;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 1.3rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+    border: 3px solid transparent;
+  }
+  .extra-card:hover {
+    background: var(--green-dark);
+    box-shadow: 0 0 30px 7px var(--green-glow);
+    border-color: var(--white);
+  }
+  .extra-card:focus {
+    outline: none;
+    background: var(--green-dark);
+    box-shadow: 0 0 40px 10px var(--green-glow);
+    border-color: var(--white);
+  }
 </style>
 </head>
 <body>
 
-<!-- Loading Screen -->
-<div id="loadingScreen">KeyGo Loading...</div>
+  <!-- Loading Screen -->
+  <div id="loadingScreen">Loading KeyGo...</div>
 
-<!-- Dashboard -->
-<div id="dashboard" class="hidden container">
-  <h1>KeyGo - Typing Lessons</h1>
-  <div class="lesson-track" aria-label="Lesson path navigation">
-    <!-- Lesson buttons inserted by JS -->
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="#" class="navbar-brand">
+      <i class="bi bi-key-fill"></i> KeyGo
+    </a>
+  </nav>
+
+  <!-- Main Dashboard -->
+  <div id="dashboard" class="hidden">
+    <h1 class="dashboard-header">Your Lessons</h1>
+    <div class="lesson-track">
+      <!-- Example Lesson Buttons -->
+      <button class="lesson-button" tabindex="0" aria-label="Lesson 1: Basics">
+        <span class="lesson-num">1</span>
+        <span class="lesson-title">Basics</span>
+        <span class="progress-badge">3 done / 12 left</span>
+      </button>
+      <button class="lesson-button" tabindex="0" aria-label="Lesson 2: Intermediate">
+        <span class="lesson-num">2</span>
+        <span class="lesson-title">Intermediate</span>
+        <span class="progress-badge">7 done / 8 left</span>
+      </button>
+      <button class="lesson-button" tabindex="0" aria-label="Lesson 3: Advanced">
+        <span class="lesson-num">3</span>
+        <span class="lesson-title">Advanced</span>
+        <span class="progress-badge">0 done / 15 left</span>
+      </button>
+    </div>
+
+    <!-- Instruction Area -->
+    <div id="lessonInstruction" aria-live="polite">
+      <div id="instruction-text">
+        <h2>Finger Placement</h2>
+        <p>Place your fingers on the home row keys as shown.</p>
+      </div>
+      <div id="finger-image" aria-hidden="true">
+        <!-- Custom inline SVG finger placement -->
+        <svg width="320" height="180" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Finger placement diagram">
+          <rect x="20" y="70" width="45" height="45" rx="8" ry="8" fill="#28a745" opacity="0.9"/>
+          <rect x="70" y="70" width="45" height="45" rx="8" ry="8" fill="#7ed88a" opacity="0.7"/>
+          <rect x="120" y="70" width="45" height="45" rx="8" ry="8" fill="#1c471b" opacity="0.9"/>
+          <rect x="170" y="70" width="45" height="45" rx="8" ry="8" fill="#7ed88a" opacity="0.7"/>
+          <rect x="220" y="70" width="45" height="45" rx="8" ry="8" fill="#28a745" opacity="0.9"/>
+          <text x="42" y="100" font-size="20" fill="white" font-weight="700" font-family="Segoe UI">A</text>
+          <text x="92" y="100" font-size="20" fill="white" font-weight="700" font-family="Segoe UI">S</text>
+          <text x="142" y="100" font-size="20" fill="white" font-weight="700" font-family="Segoe UI">D</text>
+          <text x="192" y="100" font-size="20" fill="white" font-weight="700" font-family="Segoe UI">F</text>
+          <text x="242" y="100" font-size="20" fill="white" font-weight="700" font-family="Segoe UI">G</text>
+        </svg>
+      </div>
+    </div>
+
+    <button id="startTrainingBtn">Start Training</button>
   </div>
-</div>
 
-<!-- Lesson Instruction -->
-<div id="lessonInstruction" class="container" style="display:none;">
-  <h2 id="lessonTitle"></h2>
-  <p id="lessonDesc"></p>
-  <button id="startTrainingBtn" aria-label="Start Typing Training">Start Training</button>
-</div>
-
-<!-- Lesson Training -->
-<div id="lessonTraining" class="container" style="display:none;">
-  <h2 id="trainingTitle"></h2>
-  <div id="trainingText" aria-live="polite"></div>
-  <input type="text" id="userInput" placeholder="Type here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Typing input" />
-  <div id="result" aria-live="polite"></div>
-</div>
-
-<!-- Bootstrap & Popper JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Additional Sections - Games & Timed Typing -->
+  <div id="extras" aria-label="Additional typing activities">
+    <div class="extra-card" role="button" tabindex="0" aria-pressed="false" aria-label="Launch Typing Games">
+      <i class="bi bi-controller" style="font-size: 2.5rem; display: block; margin-bottom: 8px;"></i>
+      Games
+    </div>
+    <div class="extra-card" role="button" tabindex="0" aria-pressed="false" aria-label="Launch Timed Typing Challenge">
+      <i class="bi bi-clock" style="font-size: 2.5rem; display: block; margin-bottom: 8px;"></i>
+      Timed Typing
+    </div>
+  </div>
 
 <script>
-(() => {
-  const lessons = [
-    {
-      id: 1,
-      title: 'Home Row Mastery',
-      description:
-        'Focus on the home row keys (ASDF for left hand, JKL; for right hand). Type the given text exactly to build muscle memory.',
-      trainingText: 'asdf jkl; asdf jkl; asdf jkl;'
-    },
-    {
-      id: 2,
-      title: 'Top Row Challenge',
-      description:
-        'Practice the top row keys (QWERTYUIOP). Accuracy and speed start here!',
-      trainingText: 'qwertyuiop qwertyuiop qwertyuiop'
-    },
-    {
-      id: 3,
-      title: 'Bottom Row Basics',
-      description:
-        'Master the bottom row keys (ZXCVBNM). Get comfortable with these important letters.',
-      trainingText: 'zxcvbnm zxcvbnm zxcvbnm'
-    },
-    {
-      id: 4,
-      title: 'All Rows Practice',
-      description:
-        'Combine all rows for a full finger workout. Stay focused and try for speed!',
-      trainingText: 'the quick brown fox jumps over the lazy dog'
-    },
-    {
-      id: 5,
-      title: 'Real Words Drill',
-      description:
-        'Practice typing real common words to prepare for real typing scenarios.',
-      trainingText: 'hello world engineer galaxy mission code'
+// Data: lessons with 15 exercises each - sample texts for demonstration
+const lessons = [
+  {
+    title: 'Basics',
+    exercises: [
+      "The quick brown fox jumps over the lazy dog.",
+      "Typing is fun and helpful.",
+      "Practice makes perfect every day.",
+      "Stay positive and keep improving.",
+      "Home row keys help fingers find position.",
+      "Use all fingers to type faster.",
+      "Focus on accuracy first then speed.",
+      "Take breaks when your hands feel tired.",
+      "Watch the screen, not your keyboard.",
+      "Keep your posture straight and relaxed.",
+      "Use the space bar with your thumb.",
+      "Remember to breathe and stay calm.",
+      "Typing skills open many opportunities.",
+      "Challenge yourself with new lessons.",
+      "Never give up on your typing goals."
+    ]
+  },
+  {
+    title: 'Intermediate',
+    exercises: [
+      "Intermediate typing includes punctuation.",
+      "Practice typing sentences with commas.",
+      "Use periods to end sentences properly.",
+      "Avoid looking down at your fingers.",
+      "Learn to touch type for efficiency.",
+      "Speed and accuracy go hand in hand.",
+      "Typing games help improve skills.",
+      "Timed challenges test your consistency.",
+      "Try typing with different keyboard layouts.",
+      "Build muscle memory with daily practice.",
+      "Stay motivated by tracking your progress.",
+      "Use keyboard shortcuts to save time.",
+      "Explore new words to expand vocabulary.",
+      "Keep a rhythm while typing sentences.",
+      "Celebrate achievements and milestones."
+    ]
+  },
+  {
+    title: 'Advanced',
+    exercises: [
+      "Advanced typing involves complex texts.",
+      "Practice with technical vocabulary.",
+      "Use coding exercises to improve skills.",
+      "Type emails professionally and fast.",
+      "Write reports with correct formatting.",
+      "Master shortcuts in your favorite software.",
+      "Proofread your typing to reduce errors.",
+      "Optimize your workspace for comfort.",
+      "Continuous learning improves speed.",
+      "Understand keyboard ergonomics.",
+      "Participate in typing competitions.",
+      "Stay updated with typing technologies.",
+      "Use mechanical keyboards for feedback.",
+      "Practice dictation and transcription.",
+      "Aim for perfection in all tasks."
+    ]
+  }
+];
+
+// State variables to track current lesson and exercise
+let currentLessonIndex = null;
+let currentExerciseIndex = 0;
+let doneCount = 0;
+let leftCount = 0;
+
+// DOM Elements for convenience
+const dashboard = document.getElementById('dashboard');
+const lessonTrack = document.querySelector('.lesson-track');
+const instructionText = document.getElementById('instruction-text');
+const startTrainingBtn = document.getElementById('startTrainingBtn');
+const lessonTraining = document.createElement('div');
+lessonTraining.id = 'lessonTraining';
+lessonTraining.style.display = 'none'; // hide initially
+dashboard.appendChild(lessonTraining);
+
+// Create training elements
+lessonTraining.innerHTML = `
+  <div id="trainingTitle"></div>
+  <div id="trainingText"></div>
+  <input type="text" id="userInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+  <div id="result"></div>
+`;
+
+// Get training subelements
+const trainingTitle = document.getElementById('trainingTitle');
+const trainingText = document.getElementById('trainingText');
+const userInput = document.getElementById('userInput');
+const resultDisplay = document.getElementById('result');
+
+// Update progress badges helper
+function updateProgressBadges(lessonIndex) {
+  const lessonButtons = document.querySelectorAll('.lesson-button');
+  for (let i = 0; i < lessonButtons.length; i++) {
+    const badge = lessonButtons[i].querySelector('.progress-badge');
+    if (i === lessonIndex) {
+      badge.textContent = `${doneCount} done / ${leftCount} left`;
+    } else {
+      // In a real app, you'd save progress, here reset
+      badge.textContent = `0 done / 15 left`;
     }
-  ];
-
-  // Elements
-  const loadingScreen = document.getElementById('loadingScreen');
-  const dashboard = document.getElementById('dashboard');
-  const lessonTrack = dashboard.querySelector('.lesson-track');
-  const lessonInstruction = document.getElementById('lessonInstruction');
-  const lessonTraining = document.getElementById('lessonTraining');
-  const lessonTitle = document.getElementById('lessonTitle');
-  const lessonDesc = document.getElementById('lessonDesc');
-  const startTrainingBtn = document.getElementById('startTrainingBtn');
-  const trainingTitle = document.getElementById('trainingTitle');
-  const trainingTextDiv = document.getElementById('trainingText');
-  const userInput = document.getElementById('userInput');
-  const resultDiv = document.getElementById('result');
-
-  let currentLesson = null;
-  let currentIndex = 0;
-
-  // Create lesson buttons on the dashboard
-  function buildLessonButtons() {
-    lessons.forEach(lesson => {
-      const btn = document.createElement('button');
-      btn.classList.add('lesson-button');
-      btn.type = 'button';
-      btn.textContent = lesson.id;
-      btn.title = lesson.title;
-      btn.setAttribute('aria-label', `Start lesson ${lesson.id}: ${lesson.title}`);
-      btn.addEventListener('click', () => {
-        openLesson(lesson.id);
-      });
-      lessonTrack.appendChild(btn);
-    });
   }
+}
 
-  // Open lesson instructions
-  function openLesson(id) {
-    currentLesson = lessons.find(l => l.id === id);
-    if (!currentLesson) return;
+// Handler to load a lesson
+function loadLesson(index) {
+  currentLessonIndex = index;
+  currentExerciseIndex = 0;
+  doneCount = 0;
+  leftCount = lessons[index].exercises.length;
 
-    // Hide dashboard, show instructions
-    dashboard.classList.add('hidden');
-    lessonTraining.style.display = 'none';
+  // Hide main lesson buttons and show instruction + training
+  lessonTrack.style.display = 'none';
+  startTrainingBtn.style.display = 'block';
+  
+  instructionText.innerHTML = `
+    <h2>${lessons[index].title} Lesson</h2>
+    <p>Ready to practice ${lessons[index].title.toLowerCase()}? Press "Start Training" to begin the exercises.</p>
+  `;
 
-    lessonTitle.textContent = `Lesson ${currentLesson.id}: ${currentLesson.title}`;
-    lessonDesc.textContent = currentLesson.description;
-    lessonInstruction.style.display = 'block';
-    startTrainingBtn.focus();
-  }
+  lessonTraining.style.display = 'none';
+  userInput.value = '';
+  userInput.disabled = true;
+  resultDisplay.textContent = '';
 
-  // Start training session for current lesson
-  function startTraining() {
-    if (!currentLesson) return;
+  updateProgressBadges(index);
+}
 
-    lessonInstruction.style.display = 'none';
-    lessonTraining.style.display = 'block';
-    trainingTitle.textContent = `Typing Practice - Lesson ${currentLesson.id}`;
-    currentIndex = 0;
-    renderTrainingText();
-    userInput.value = '';
-    resultDiv.textContent = '';
-    userInput.focus();
-  }
+// Start training handler
+function startTraining() {
+  if (currentLessonIndex === null) return;
 
-  // Render the training text with coloring
-  function renderTrainingText() {
-    const target = currentLesson.trainingText;
-    const input = userInput.value;
+  startTrainingBtn.style.display = 'none';
+  lessonTraining.style.display = 'flex';
 
-    // Build colored text
-    let html = '';
-    for (let i = 0; i < target.length; i++) {
-      const char = target[i];
-      if (i < input.length) {
-        html += input[i] === char ? `<span class="correct">${char}</span>` : `<span class="incorrect">${char}</span>`;
+  loadExercise();
+}
+
+// Load current exercise text into training area
+function loadExercise() {
+  const exerciseText = lessons[currentLessonIndex].exercises[currentExerciseIndex];
+  trainingTitle.textContent = `Exercise ${currentExerciseIndex + 1} / 15`;
+  
+  // show text with no color initially — We'll highlight on input
+  trainingText.textContent = exerciseText;
+  userInput.value = '';
+  userInput.disabled = false;
+  userInput.focus();
+  resultDisplay.textContent = '';
+}
+
+// Check user input on every keystroke
+userInput.addEventListener('input', () => {
+  const exerciseText = lessons[currentLessonIndex].exercises[currentExerciseIndex];
+  const inputVal = userInput.value;
+
+  // Reset trainingText HTML
+  const correctChars = [];
+  let allCorrect = true;
+
+  // Build colored text
+  let highlighted = '';
+  for (let i = 0; i < exerciseText.length; i++) {
+    let char = exerciseText[i];
+    if (i < inputVal.length) {
+      if (inputVal[i] === char) {
+        highlighted += `<span class="correct">${char}</span>`;
       } else {
-        html += char;
+        highlighted += `<span class="incorrect">${char}</span>`;
+        allCorrect = false;
       }
-    }
-
-    trainingTextDiv.innerHTML = html;
-
-    // Check if complete
-    if (input === target) {
-      onComplete();
+    } else {
+      highlighted += char;
+      allCorrect = false;
     }
   }
 
-  // When lesson completes
-  function onComplete() {
-    resultDiv.textContent = '🎉 Awesome! You completed the lesson!';
-    userInput.disabled = true;
-    userInput.blur();
+  trainingText.innerHTML = highlighted;
 
-    // After 3 seconds, go back to dashboard
-    setTimeout(() => {
-      lessonTraining.style.display = 'none';
-      dashboard.classList.remove('hidden');
-      resultDiv.textContent = '';
-      userInput.disabled = false;
-      userInput.value = '';
-      userInput.removeEventListener('input', onUserInput);
-    }, 3000);
-  }
+  if (inputVal.length === exerciseText.length) {
+    // full length entered - check correctness
 
-  // Input event
-  function onUserInput() {
-    renderTrainingText();
-  }
-
-  // Init app
-  function init() {
-    buildLessonButtons();
-
-    // Loading screen slide out after 2 sec
-    setTimeout(() => {
-      loadingScreen.classList.add('slide-out');
-      // Hide loading after animation
+    if (allCorrect) {
+      resultDisplay.textContent = 'Great! Exercise Complete!';
+      doneCount++;
+      leftCount--;
+      
+      updateProgressBadges(currentLessonIndex);
+    
+      // Load next exercise after short delay
       setTimeout(() => {
-        loadingScreen.style.display = 'none';
-        dashboard.classList.remove('hidden');
-      }, 1000);
-    }, 2000);
-
-    // Event listeners
-    startTrainingBtn.addEventListener('click', () => {
-      startTraining();
-      userInput.addEventListener('input', onUserInput);
-    });
+        currentExerciseIndex++;
+        if (currentExerciseIndex >= lessons[currentLessonIndex].exercises.length) {
+          // Lesson complete
+          resultDisplay.textContent = `🎉 You completed all exercises in ${lessons[currentLessonIndex].title} Lesson!`;
+          userInput.disabled = true;
+          startTrainingBtn.textContent = 'Back to Lessons';
+          startTrainingBtn.style.display = 'block';
+          startTrainingBtn.focus();
+        } else {
+          loadExercise();
+        }
+      }, 1200);
+    } else {
+      resultDisplay.textContent = 'Check your typing and fix errors.';
+    }
+  } else {
+    resultDisplay.textContent = '';
   }
+});
 
-  init();
-})();
+// Setup lesson buttons click events
+function setupLessonButtons() {
+  const lessonButtons = document.querySelectorAll('.lesson-button');
+  lessonButtons.forEach((btn, idx) => {
+    btn.addEventListener('click', () => {
+      loadLesson(idx);
+    });
+  });
+}
+
+// Start training button click
+startTrainingBtn.addEventListener('click', () => {
+  if (startTrainingBtn.textContent === 'Back to Lessons') {
+    // Reset UI for lessons
+    lessonTraining.style.display = 'none';
+    lessonTrack.style.display = 'flex';
+    startTrainingBtn.textContent = 'Start Training';
+    startTrainingBtn.style.display = 'none'; // hide start button at lesson selection
+    currentLessonIndex = null;
+    currentExerciseIndex = 0;
+  } else {
+    startTraining();
+  }
+});
+
+
+// Extras cards click handlers (stub)
+document.querySelectorAll('.extra-card').forEach(card => {
+  card.addEventListener('click', () => {
+    alert(`Launching ${card.textContent.trim()} (Coming Soon!)`);
+  });
+});
+
+// Initialize on page load
+window.addEventListener('load', () => {
+  setupLessonButtons();
+});
 </script>
 
 </body>
