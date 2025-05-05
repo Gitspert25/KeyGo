@@ -1,0 +1,27 @@
+// _variables.scss - Keygo color variables and fonts
+
+// Colors
+$green-dark:    #013220;
+$green-medium:  #196619;
+$green-light:   #28a745;
+$green-lighter: #daf8d3;
+$white:         #ffffff;
+
+// Font families
+$font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+// Font sizes
+$font-size-base: 1rem;
+$font-size-lg: 1.25rem;
+$font-size-xl: 1.5rem;
+
+// Spacing
+$spacer: 1rem;
+$spacer-half: 0.5rem;
+
+// Border radius
+$border-radius: 0.3rem;
+
+// Shadows
+$shadow-light: 0 2px 5px rgba($green-medium, 0.15);
+$shadow-medium: 0 4px 15px rgba($green-medium, 0.3);
