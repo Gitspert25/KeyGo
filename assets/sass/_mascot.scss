@@ -1,0 +1,78 @@
+// _mascot.scss - CSS for Keygo's floating green triangle mascot with blinking eye
+
+$green-dark:    #013220;
+$green-medium:  #196619;
+$white:         #ffffff;
+
+// Container for the mascot
+#mascot {
+  width: 80px;
+  height: 80px;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  cursor: pointer;
+  user-select: none;
+  z-index: 1000;
+  animation: floatUpDown 3s ease-in-out infinite;
+}
+
+// Triangle body using border trick
+#mascot .triangle {
+  width: 0;
+  height: 0;
+  border-left: 40px solid transparent;
+  border-right: 40px solid transparent;
+  border-bottom: 80px solid $green-medium;
+  position: relative;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.15));
+  border-radius: 8px 8px 0 0;
+}
+
+// White eye circle
+#mascot .eye {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  background-color: $white;
+  border-radius: 50%;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.25);
+  overflow: hidden;
+  z-index: 10;
+}
+
+// Dark green pupil
+#mascot .pupil {
+  width: 12px;
+  height: 12px;
+  background-color: $green-dark;
+  border-radius: 50%;
+  position: relative;
+  top: 5px;
+  left: 5px;
+  animation: blinkPupil 5s linear infinite;
+  z-index: 11;
+}
+
+// Mascot floating animation
+@keyframes floatUpDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+// Pupil blinking: shrinks horizontally briefly
+@keyframes blinkPupil {
+  0%, 97%, 100% {
+    width: 12px;
+  }
+  98%, 99% {
+    width: 2px;
+  }
+}
