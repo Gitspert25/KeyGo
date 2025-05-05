@@ -1,0 +1,38 @@
+// _mixins.scss - reusable SCSS mixins for Keygo
+
+// Flexbox center helper
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Smooth transition for properties
+@mixin transition($properties..., $duration: 0.3s, $timing: ease) {
+  transition: $properties $duration $timing;
+}
+
+// Text glow effect
+@mixin text-glow($color, $size: 6px) {
+  text-shadow: 0 0 $size $color;
+}
+
+// Box shadow helper
+@mixin box-shadow($shadow...) {
+  -webkit-box-shadow: $shadow;
+  -moz-box-shadow: $shadow;
+  box-shadow: $shadow;
+}
+
+// Responsive breakpoint (use max-width)
+@mixin respond-max($breakpoint) {
+  @if $breakpoint == sm {
+    @media (max-width: 576px) { @content; }
+  } @else if $breakpoint == md {
+    @media (max-width: 768px) { @content; }
+  } @else if $breakpoint == lg {
+    @media (max-width: 992px) { @content; }
+  } @else if $breakpoint == xl {
+    @media (max-width: 1200px) { @content; }
+  }
+}
